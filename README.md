@@ -4,6 +4,8 @@
 
 Not much here yet....
 
+INO file is located under /portable/sketchbook/Pikatea_SDcard_Firmware
+
 compile with Arduino Leonardo board selected
 
 TODO list
