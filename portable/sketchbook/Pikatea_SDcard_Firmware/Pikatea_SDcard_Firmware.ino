@@ -2,17 +2,19 @@
 //Pikatea SD card Firmware
 
 //libraries to include
-#include "HID-Project.h
+#include "HID-Project.h"
 #include <Encoder.h>
 #include <SPI.h>
 #include <SD.h>
 #include <Keypad.h>
 
-#define PIKATEA_MACROPAD_GB2
+//#define PIKATEA_MACROPAD_GB2
+#define PIKATEA_MACROPAD_AFSC
 
 //Constants
 //Pikatea GB2
 #if defined(PIKATEA_MACROPAD_GB2)
+
 //the buttons
 #define ROWS 1
 #define COLS 6
@@ -26,7 +28,6 @@ Keypad keypad = Keypad( makeKeymap(keys), rowPins, colPins, ROWS, COLS ); //chan
 String buttonStrings[] = {"", "", "", "", "", "", "", "", "", "", "", ""};
 int fakeAnalogSliderValues[] = {1023, 1023, 1023, 1023, 1023, 1023};
 
-
 //the encoder
 #define ENCODER_DO_NOT_USE_INTERRUPTS
 const int EncoderPinA[] = {4};
@@ -37,6 +38,7 @@ int deejSensitivityConstant = 32;
 String knobStrings[][2] = {{"", ""}};
 #endif
 
+//desktop macropad
 #if defined(PIKATEA_MACROPAD_AFSC)
 //the buttons
 #define ROWS 2
@@ -46,21 +48,20 @@ char keys[ROWS][COLS] = {
   {0, 1, 2, 3,   4},
   {5, 6, 7,  8,      9}
 };
-byte rowPins[ROWS] = {A3,A0}; //connect to the row pinouts of the keypad // change to define
+byte rowPins[ROWS] = {A3, A0}; //connect to the row pinouts of the keypad // change to define
 byte colPins[COLS] = {9, 7, 8, 16, 2}; //connect to the column pinouts of the keypad //change to define
 Keypad keypad = Keypad( makeKeymap(keys), rowPins, colPins, ROWS, COLS ); //change to define
 String buttonStrings[] = {"", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", ""};
 int fakeAnalogSliderValues[] = {1023, 1023, 1023, 1023, 1023, 1023};
 
-
 //the encoder
 #define ENCODER_DO_NOT_USE_INTERRUPTS
-const int EncoderPinA[] = {4,5};
-const int EncoderPinB[] = {3,6};
+const int EncoderPinA[] = {4, 5};
+const int EncoderPinB[] = {3, 6};
 Encoder myEnc(EncoderPinA[0], EncoderPinB[0]);
 #define encoderConstant 3
 int deejSensitivityConstant = 32;
-String knobStrings[][2] = {{"", ""},{"",""}};
+String knobStrings[][2] = {{"", ""}, {"", ""}};
 #endif
 
 //Variables that change
@@ -101,7 +102,7 @@ void loop() {
   if (newPosition > oldPosition + encoderConstant) {
     oldPosition = newPosition;
     //standard mode
-    if (mode == 0) {
+    if (!dj) {
       pressKeys(knobStrings[0][1], false);
       releaseKeys();
       //deej mode
@@ -117,11 +118,10 @@ void loop() {
     oldPosition = newPosition;
 
     //standard mode
-    if (mode == 0) {
+    if (!dj) {
       pressKeys(knobStrings[0][0], false);
       releaseKeys();
       //deej mode
-
     } else {
       if (currentButton != -1) {
         fakeAnalogSliderValues[currentButton] = fakeAnalogSliderValues[currentButton] + deejSensitivityConstant;
@@ -133,16 +133,19 @@ void loop() {
 }
 
 int holdFlag = 0;
-// Taking care of some special events.
+//when a button is pressed
 void keypadEvent(KeypadEvent key) {
   switch (keypad.getState()) {
     case PRESSED:
-    Serial.println(key);
+      dj = false;
+      Serial.println(key);
       break;
 
     case RELEASED:
+      //if the button has not been held
       if (holdFlag == 0) {
-        Serial.print("released: ");
+        //short press
+        Serial.print("shortpress: ");
         Serial.println(buttonStrings[(int)key]);
         Keyboard.release(key);
         pressKeys(buttonStrings[(int)key], true);
@@ -170,56 +173,57 @@ int InitializeSDCard(boolean makeMultipleAttempts) {
     Serial.println(F("initialization failed!"));
     if (!SD.begin(10)) {
       Serial.println(F("initialization failed!"));
-      
+
     }
   }
   Serial.println(F("initialization done."));
+  String FileName = F("config.txt");
   //move this to different function
 #if defined(PIKATEA_MACROPAD_GB2)
-  knobStrings[0][0] = ExtractSetting(F("KnobCW="), "config.txt");
-  knobStrings[0][1] = ExtractSetting(F("KnobCCW="), "config.txt");
-  buttonStrings[0] = ExtractSetting(F("Button1="), "config.txt");
-  buttonStrings[1] = ExtractSetting(F("Button2="), "config.txt");
-  buttonStrings[2] = ExtractSetting(F("Button3="), "config.txt");
-  buttonStrings[3] = ExtractSetting(F("Button4="), "config.txt");
-  buttonStrings[4] = ExtractSetting(F("Button5="), "config.txt");
-  buttonStrings[5] = ExtractSetting(F("KnobButton="), "config.txt");
-  buttonStrings[6] = ExtractSetting(F("Button1Hold="), "config.txt");
-  buttonStrings[7] = ExtractSetting(F("Button2Hold="), "config.txt");
-  buttonStrings[8] = ExtractSetting(F("Button3Hold="), "config.txt");
-  buttonStrings[9] = ExtractSetting(F("Button4Hold="), "config.txt");
-  buttonStrings[10] = ExtractSetting(F("Button5Hold="), "config.txt");
-  buttonStrings[11] = ExtractSettingWithDefault(F("KnobButtonHold="), "config.txt","button hold");
+  knobStrings[0][0] = ExtractSetting(F("KnobCW="), fileName);
+  knobStrings[0][1] = ExtractSetting(F("KnobCCW="), FileName);
+  buttonStrings[0] = ExtractSetting(F("Button1="), FileName);
+  buttonStrings[1] = ExtractSetting(F("Button2="), FileName);
+  buttonStrings[2] = ExtractSetting(F("Button3="), FileName);
+  buttonStrings[3] = ExtractSetting(F("Button4="), FileName);
+  buttonStrings[4] = ExtractSetting(F("Button5="), FileName);
+  buttonStrings[5] = ExtractSetting(F("KnobButton="), FileName);
+  buttonStrings[6] = ExtractSetting(F("Button1Hold="), FileName);
+  buttonStrings[7] = ExtractSetting(F("Button2Hold="), FileName);
+  buttonStrings[8] = ExtractSetting(F("Button3Hold="), FileName);
+  buttonStrings[9] = ExtractSetting(F("Button4Hold="), FileName);
+  buttonStrings[10] = ExtractSetting(F("Button5Hold="), FileName);
+  buttonStrings[11] = ExtractSetting(F("KnobButtonHold="), FileName);
 #endif
 #if defined(PIKATEA_MACROPAD_AFSC)
-  knobStrings[0][0] = ExtractSetting(F("Knob1CW="), F("config.txt"));
-  knobStrings[0][1] = ExtractSetting(F("Knob1CCW="), F("config.txt"));
-  knobStrings[1][0] = ExtractSetting(F("Knob2CW="), F("config.txt"));
-  knobStrings[1][1] = ExtractSetting(F("Knob2CCW="), F("config.txt"));
-  buttonStrings[0] = ExtractSetting(F("Button1="), F("config.txt"));
-  buttonStrings[1] = ExtractSetting(F("Button2="), F("config.txt"));
-  buttonStrings[2] = ExtractSetting(F("Button3="), F("config.txt"));
-  buttonStrings[3] = ExtractSetting(F("Button4="), F("config.txt"));
-  buttonStrings[4] = ExtractSetting(F("Button5="), F("config.txt"));
-  buttonStrings[5] = ExtractSetting(F("Button6="), F("config.txt"));
-  buttonStrings[6] = ExtractSetting(F("Button7="), F("config.txt"));
-  buttonStrings[7] = ExtractSetting(F("Button8="), F("config.txt"));
-  buttonStrings[8] = ExtractSetting(F("KnobButton1="), F("config.txt"));
-  buttonStrings[9] = ExtractSetting(F("KnobButton2="), F("config.txt"));
-  buttonStrings[10] = ExtractSetting(F("Button1Hold="), F("config.txt"));
-  buttonStrings[11] = ExtractSetting(F("Button2Hold="), F("config.txt"));
-  buttonStrings[12] = ExtractSetting(F("Button3Hold="), F("config.txt"));
-  buttonStrings[13] = ExtractSetting(F("Button4Hold="), F("config.txt"));
-  buttonStrings[14] = ExtractSetting(F("Button5Hold="), F("config.txt"));
-  buttonStrings[15] = ExtractSetting(F("Button3Hold="), F("config.txt"));
-  buttonStrings[16] = ExtractSetting(F("Button4Hold="), F("config.txt"));
-  buttonStrings[17] = ExtractSetting(F("Button5Hold="), F("config.txt"));
-  buttonStrings[18] = ExtractSettingWithDefault(F("KnobButton1Hold="), F("config.txt"),"button hold1");
-  buttonStrings[19] = ExtractSettingWithDefault(F("KnobButton2Hold="), F("config.txt"),"button hold2");
+  knobStrings[0][0] = ExtractSetting(F("Knob1CW="), FileName);
+  knobStrings[0][1] = ExtractSetting(F("Knob1CCW="), FileName);
+  knobStrings[1][0] = ExtractSetting(F("Knob2CW="), FileName);
+  knobStrings[1][1] = ExtractSetting(F("Knob2CCW="), FileName);
+  buttonStrings[0] = ExtractSetting(F("Button1="), FileName);
+  buttonStrings[1] = ExtractSetting(F("Button2="), FileName);
+  buttonStrings[2] = ExtractSetting(F("Button3="), FileName);
+  buttonStrings[3] = ExtractSetting(F("Button4="), FileName);
+  buttonStrings[4] = ExtractSetting(F("Button5="), FileName);
+  buttonStrings[5] = ExtractSetting(F("Button6="), FileName);
+  buttonStrings[6] = ExtractSetting(F("Button7="), FileName);
+  buttonStrings[7] = ExtractSetting(F("Button8="), FileName);
+  buttonStrings[8] = ExtractSetting(F("KnobButton1="), FileName);
+  buttonStrings[9] = ExtractSetting(F("KnobButton2="), FileName);
+  buttonStrings[10] = ExtractSetting(F("Button1Hold="), FileName);
+  buttonStrings[11] = ExtractSetting(F("Button2Hold="), FileName);
+  buttonStrings[12] = ExtractSetting(F("Button3Hold="), FileName);
+  buttonStrings[13] = ExtractSetting(F("Button4Hold="), FileName);
+  buttonStrings[14] = ExtractSetting(F("Button5Hold="), FileName);
+  buttonStrings[15] = ExtractSetting(F("Button3Hold="), FileName);
+  buttonStrings[16] = ExtractSetting(F("Button4Hold="), FileName);
+  buttonStrings[17] = ExtractSetting(F("Button5Hold="), FileName);
+  buttonStrings[18] = ExtractSetting(F("KnobButton1Hold="), FileName);
+  buttonStrings[19] = ExtractSetting(F("KnobButton2Hold="), FileName);
 #endif
-  deejSensitivityConstant = ExtractSettingWithDefault(F("deejSensitivity="), "config.txt", "32").toInt();
+  deejSensitivityConstant = ExtractSettingWithDefault(F("deejSensitivity="), FileName, "32").toInt();
 
-  if (ExtractSetting(F("deejmode="), "config.txt").indexOf("rue") > 0 or ExtractSetting(F("deejMode="), "config.txt").indexOf("rue") > 0) {
+  if (ExtractSetting(F("deejmode="), FileName).indexOf("rue") > 0 or ExtractSetting(F("deejMode = "), FileName).indexOf("rue") > 0) {
     //Serial.println("Deej mode Active");
     mode = 1;
   }
@@ -227,7 +231,6 @@ int InitializeSDCard(boolean makeMultipleAttempts) {
 
   return 1;
 }
-
 
 String ExtractSettingWithDefault(String setting, String fileName, String defaultValue) {
   String Temp = "";
@@ -351,12 +354,10 @@ void pressKey(String given, boolean addDelay) {
     Keyboard.press(KEY_LEFT_ALT);
   } else if (given.indexOf(F("LeftMenu")) >= 0 || given.indexOf(F("Menu")) >= 0) {
     Keyboard.press(KEY_LEFT_GUI);
-    //  } else if (given.indexOf(F("F1")) >= 0
-    //             && (given.indexOf(F("F1")) != (given.indexOf(F("F11")) && given.indexOf(F("F12")) && given.indexOf(F("F13")) && given.indexOf(F("F14")) && given.indexOf(F("F15")) && given.indexOf(F("F16")) && given.indexOf(F("F17")) && given.indexOf(F("F18")) && given.indexOf(F("F19")) && given.indexOf(F("F10"))))) {
-    //    Keyboard.press(KEY_F1);
-    //  } else if (given.indexOf(F("F2")) >= 0
-    //             && (given.indexOf(F("F2")) != (given.indexOf(F("F21")) && given.indexOf(F("F22")) && given.indexOf(F("F23")) && given.indexOf(F("F24")) && given.indexOf(F("F20"))))) {
-    //    Keyboard.press(KEY_F2);
+  } else if (given.indexOf(F("F1")) >= 0 && (given.indexOf(F("F1")) != (given.indexOf(F("F11")) && given.indexOf(F("F12")) && given.indexOf(F("F13")) && given.indexOf(F("F14")) && given.indexOf(F("F15")) && given.indexOf(F("F16")) && given.indexOf(F("F17")) && given.indexOf(F("F18")) && given.indexOf(F("F19")) && given.indexOf(F("F10"))))) {
+    Keyboard.press(KEY_F1);
+  } else if (given.indexOf(F("F2")) >= 0 && (given.indexOf(F("F2")) != (given.indexOf(F("F21")) && given.indexOf(F("F22")) && given.indexOf(F("F23")) && given.indexOf(F("F24")) && given.indexOf(F("F20"))))) {
+    Keyboard.press(KEY_F2);
   } else if (given.indexOf(F("F3")) >= 0) {
     Keyboard.press(KEY_F3);
   } else if (given.indexOf(F("F4")) >= 0) {
@@ -423,12 +424,6 @@ void pressKey(String given, boolean addDelay) {
     Keyboard.press(KEY_LEFT_SHIFT);
     Mouse.move(0, 0, -1);
     Keyboard.releaseAll();
-    //  } else if (given.indexOf(F("Power")) >= 0) {
-    //    Consumer.write(HID_CONSUMER_POWER);
-    //  } else if (given.indexOf(F("Reset")) >= 0) {
-    //    Consumer.write(HID_CONSUMER_RESET);
-    //  } else if (given.indexOf(F("Sleep")) >= 0) {
-    //    Consumer.write(HID_CONSUMER_SLEEP);
   } else if (given.indexOf(F("Keypad1")) >= 0) {
     Keyboard.press(KEYPAD_1);
   } else if (given.indexOf(F("Keypad2")) >= 0) {
@@ -470,7 +465,7 @@ void pressKey(String given, boolean addDelay) {
     //Keyboard.write(KeyboardKeycode(x2i(temp3)));
   } else {
     // key not found
-    //Serial.print("key not found, typing:");
+    //Serial.print("key not found, typing: ");
 
     char c[given.length() + 1];
     given.toCharArray(c, sizeof(c));
@@ -496,9 +491,9 @@ void releaseKeys() {
 void pressKeys(String given, boolean Delay) {
   //Serial.println(given);
   String temp = given;
-  while (temp.lastIndexOf("+") > -1) {
-    pressKey(temp.substring(0, temp.indexOf("+")), Delay);
-    temp = temp.substring(temp.indexOf("+") + 1, temp.length());
+  while (temp.lastIndexOf(" + ") > -1) {
+    pressKey(temp.substring(0, temp.indexOf(" + ")), Delay);
+    temp = temp.substring(temp.indexOf(" + ") + 1, temp.length());
   }
   pressKey(temp, Delay);
 }
@@ -514,7 +509,7 @@ void sendSliderValues() {
       builtString += String((int)fakeAnalogSliderValues[i]);
 
       if (i < 5 - 1) {
-        builtString += String("|");
+        builtString += String(" | ");
       }
     }
     unsigned long DJcurrentMillis = millis();
