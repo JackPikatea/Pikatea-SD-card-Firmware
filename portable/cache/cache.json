@@ -2,54 +2,54 @@
   "files" : [ {
     "remoteURL" : "https://downloads.arduino.cc/libraries/library_index.json.gz",
     "localPath" : "C:\\Users\\jackr\\Documents\\Pikatea-SD-card-keyboard-Firmware\\portable\\cache\\downloads.arduino.cc\\libraries\\library_index.json.gz",
-    "eTag" : "4bfac1ad5d451d6aaadf32e28296167b",
-    "md5" : "MD5:4bfac1ad5d451d6aaadf32e28296167b",
-    "createdAt" : "2021-04-07T08:13:26.5",
+    "eTag" : "b4ec7fbba11de91754d59a09ef9fd8cf",
+    "md5" : "MD5:b4ec7fbba11de91754d59a09ef9fd8cf",
+    "createdAt" : "2021-04-07T13:01:52.241",
     "cacheControl" : {
       "maxAge" : 14400,
       "mustRevalidate" : false,
       "noCache" : false,
       "noStore" : false
     },
-    "expires" : "2021-04-07T12:13:26.500"
+    "expires" : "2021-04-07T17:01:52.241"
+  }, {
+    "remoteURL" : "https://downloads.arduino.cc/libraries/library_index.json.sig",
+    "localPath" : "C:\\Users\\jackr\\Documents\\Pikatea-SD-card-keyboard-Firmware\\portable\\cache\\downloads.arduino.cc\\libraries\\library_index.json.sig",
+    "eTag" : "6d5410878142d71fc4f702ff18bdd5b0",
+    "md5" : "MD5:6d5410878142d71fc4f702ff18bdd5b0",
+    "createdAt" : "2021-04-07T13:01:52.639",
+    "cacheControl" : {
+      "maxAge" : 14400,
+      "mustRevalidate" : false,
+      "noCache" : false,
+      "noStore" : false
+    },
+    "expires" : "2021-04-07T17:01:52.639"
   }, {
     "remoteURL" : "https://downloads.arduino.cc/packages/package_index.json.sig",
     "localPath" : "C:\\Users\\jackr\\Documents\\Pikatea-SD-card-keyboard-Firmware\\portable\\cache\\downloads.arduino.cc\\packages\\package_index.json.sig",
     "eTag" : "ca46373732757b2fc720020950edb133",
     "md5" : "MD5:ca46373732757b2fc720020950edb133",
-    "createdAt" : "2021-04-07T10:05:14.092",
+    "createdAt" : "2021-04-07T13:01:51.122",
     "cacheControl" : {
       "maxAge" : 3600,
       "mustRevalidate" : false,
       "noCache" : false,
       "noStore" : false
     },
-    "expires" : "2021-04-07T11:05:14.092"
-  }, {
-    "remoteURL" : "https://downloads.arduino.cc/libraries/library_index.json.sig",
-    "localPath" : "C:\\Users\\jackr\\Documents\\Pikatea-SD-card-keyboard-Firmware\\portable\\cache\\downloads.arduino.cc\\libraries\\library_index.json.sig",
-    "eTag" : "865324516a146c757678a72c4d719e18",
-    "md5" : "MD5:865324516a146c757678a72c4d719e18",
-    "createdAt" : "2021-04-07T08:13:26.998",
-    "cacheControl" : {
-      "maxAge" : 14400,
-      "mustRevalidate" : false,
-      "noCache" : false,
-      "noStore" : false
-    },
-    "expires" : "2021-04-07T12:13:26.998"
+    "expires" : "2021-04-07T14:01:51.122"
   }, {
     "remoteURL" : "https://downloads.arduino.cc/packages/package_index.json",
     "localPath" : "C:\\Users\\jackr\\Documents\\Pikatea-SD-card-keyboard-Firmware\\portable\\cache\\downloads.arduino.cc\\packages\\package_index.json",
     "eTag" : "fc625a5bd4d954726c3c8074c6c83195",
     "md5" : "MD5:fc625a5bd4d954726c3c8074c6c83195",
-    "createdAt" : "2021-04-07T10:05:13.951",
+    "createdAt" : "2021-04-07T13:01:50.99",
     "cacheControl" : {
       "maxAge" : 3600,
       "mustRevalidate" : false,
       "noCache" : false,
       "noStore" : false
     },
-    "expires" : "2021-04-07T11:05:13.951"
+    "expires" : "2021-04-07T14:01:50.990"
   } ]
 }
