@@ -1,0 +1,5 @@
+
+*.log
+portable/logs/application.log
+portable/preferences.txt
+portable/cache/cache.json
