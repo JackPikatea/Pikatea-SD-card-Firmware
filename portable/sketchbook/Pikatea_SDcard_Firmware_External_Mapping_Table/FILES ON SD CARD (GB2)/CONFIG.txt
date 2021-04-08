@@ -1,0 +1,23 @@
+deejmode=false
+deejSensitivity=32
+EncoderConstant=3
+
+KnobCW=MEDIA_VOLUME_UP
+KnobCCW=MEDIA_VOLUME_DOWN
+
+Button1=MEDIA_REWIND
+Button2=KEY_LEFT_GUI
+Button3=MEDIA_PREVIOUS
+Button4=MEDIA_PLAY_PAUSE
+Button5=MEDIA_NEXT
+KnobButton=MEDIA_VOLUME_MUTE
+
+KnobButton2=
+Button1Hold=
+Button2Hold=
+Button3Hold=
+Button4Hold=
+Button5Hold=
+KnobButtonHold=
+
+/Documentation can be found at https://www.pikatea.com/pages/pikatea-macropad-user-guide
