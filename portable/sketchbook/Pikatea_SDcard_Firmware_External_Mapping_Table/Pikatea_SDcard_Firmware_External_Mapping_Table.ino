@@ -344,8 +344,14 @@ void pressKey(String given, boolean addDelay)
     }
   }
   else
-  {
-    Keyboard.write(KeyboardKeycode(given.toInt()));
+  {         
+    if(given.toInt() < 512){
+      Keyboard.write(KeyboardKeycode(given.toInt() - 0x100 ));      
+    }
+    else if(given.toInt() < 768){
+      Consumer.write(ConsumerKeycode(given.toInt() - 0x200 ));    
+    }
+    
   }
 }
 
