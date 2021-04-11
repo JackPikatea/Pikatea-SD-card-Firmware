@@ -1,6 +1,6 @@
 $prefixArray = @{
-    keyboard = 0x100;
-    consumer = 0x200;
+    keyboard = 0;
+    consumer = 1000;
 }
 $rawValues = Import-Csv $PSScriptRoot\tmf_raw.csv | Sort-Object api
 

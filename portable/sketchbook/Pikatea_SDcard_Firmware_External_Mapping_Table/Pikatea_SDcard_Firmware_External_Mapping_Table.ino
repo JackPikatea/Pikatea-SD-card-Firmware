@@ -345,11 +345,11 @@ void pressKey(String given, boolean addDelay)
   }
   else
   {         
-    if(given.toInt() < 512){
-      Keyboard.write(KeyboardKeycode(given.toInt() - 0x100 ));      
+    if(given.toInt() < 0){
+      Keyboard.write(KeyboardKeycode(given.toInt() - 0 ));      
     }
-    else if(given.toInt() < 768){
-      Consumer.write(ConsumerKeycode(given.toInt() - 0x200 ));    
+    else if(given.toInt() < 2000){
+      Consumer.write(ConsumerKeycode(given.toInt() - 1000 ));    
     }
     
   }
