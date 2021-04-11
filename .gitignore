@@ -1,4 +1,4 @@
-
+.vscode/
 *.log
 portable/logs/application.log
 portable/preferences.txt
@@ -6,8 +6,5 @@ portable/cache/cache.json
 portable/package_index.json.sig
 portable/library_index.json.sig
 portable/library_index.json
-portable/cache/downloads.arduino.cc/packages/package_index.json.sig
-portable/cache/downloads.arduino.cc/libraries/library_index.json.sig
-portable/cache/downloads.arduino.cc/libraries/library_index.json.gz
-portable/cache/cache.json
+portable/cache/
 portable/preferences.txt
